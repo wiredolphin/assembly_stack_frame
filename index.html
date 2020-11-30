@@ -7,12 +7,20 @@
     <style>
     	body { font-size: 14px; font-family: sans-serif; }
     	section { width: 100%; margin: 0 auto; }
-    	figure { margin: 0; }
+    	figure { position: relative; margin: 0; }
     	figure img { width: 100%; }
-    	figcaption { font-size: 1.1em; font-weight: bold; }
+    	figcaption { 
+        position: absolute; 
+        top: 0;
+        width: 100%;
+        text-align: center;
+        margin-top: 4px;
+        font-family: "Courier New"; 
+        font-size: 1em;
+        color: #909090; }
     	button { margin: 0 2px; }
-    	#controls { display: flex; justify-content: center; margin: 20px 0;}
-    	#stage-caption { color: #eeaa00; }
+    	#controls { display: flex; justify-content: center; margin: 8px 0;}
+    	#stage-caption, #frame-caption { color: #eeaa00; font-weight: 600; }
     	@media screen and (min-width: 990px) { 
     		section { width: 80%; max-width: 920px; }
     		#controls { display: flex; justify-content: left;
@@ -24,10 +32,12 @@
     <main>
   		<section>
   			<h2>Assembly</h2>
-  			<h3>C function call: the Stack</h3>
+  			<h3>C function call: the Stack frame</h3>
   			<figure>
   				<img id="stack-image" src="" data-src="" alt="stack stage 1" />
-  				<figcaption>Current frame/stage: <span id="stage-caption"></span></figcaption>
+  				<figcaption>
+            frame: <span id="frame-caption"></span> of instruction: <span id="stage-caption"></span>
+          </figcaption>
   			</figure>
   			<div id="controls">
   				<button id="begin">&lt;&lt;</button>
@@ -53,7 +63,8 @@
     		$play = document.getElementById("play"),
     		$begin = document.getElementById("begin"),
     		$end = document.getElementById("end"),
-    		$caption = document.getElementById("stage-caption"),
+        $stageCaption = document.getElementById("stage-caption"),
+    		$frameCaption = document.getElementById("frame-caption"),
     		currentStage = 0,
     		currentFrame = 0,
 				images = (function buildUrls() {
@@ -77,6 +88,7 @@
           hdImg.onload = function() {
             $image.src = hdImg.src;
           }
+          updateText(currentStage, currentFrame);
           // Preload the next ones
           for (let i = frame; i < FRAMES; i++) {
             let hdImg = new Image();
@@ -89,18 +101,20 @@
             }
           }
         }
+        function updateText(stage, frame) {
+          $stageCaption.innerHTML = currentStage + 1;
+          $frameCaption.innerHTML = currentFrame + 1;
+        }
 	    	function toBegin() {
 	    		currentStage = 0;
     			currentFrame = 0;
     			setImage(currentStage, currentFrame);
-    			$caption.innerHTML = (currentFrame + 1) + "/" + (currentStage + 1);
     			toggleButtons(true, true, false, false);
 	    	}
 	    	function toEnd() {
 	    		currentStage = STAGES - 1;
 	    		currentFrame = FRAMES - 1;
 	    		setImage(currentStage, currentFrame);
-    			$caption.innerHTML = (currentFrame + 1) + "/" + (currentStage + 1);
     			toggleButtons(false, false, true, true);
     			console.log("end: currentStage: ", currentStage);
 	    	}
@@ -127,10 +141,9 @@
 	    			currentStage = stage;
 	    			toggleButtons(true, true, true, true, true);
 	    		}
+          setImage(currentStage, currentFrame);
+          currentFrame++;
 	    		playTimer = setInterval(function() {
-						setImage(currentStage, currentFrame);
-						$caption.innerHTML = (currentFrame + 1) + "/" + (currentStage + 1);
-  					currentFrame++;
   					if (undefined !== stage && currentFrame >= 4) {
 							currentStage++;
 							setButtons();
@@ -151,6 +164,8 @@
   							currentStage = 0;
   						}
   					}
+            setImage(currentStage, currentFrame);
+            currentFrame++;
   				}, interval);
 	    	}
     		function playStage(evt) {
