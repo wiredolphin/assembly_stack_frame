@@ -2,7 +2,7 @@
 
 A simple javascript snippet that illustrates the stack frame during a C function call.
 
-The frame sequences are screnshoots from the [GDB](https://www.gnu.org/software/gdb/) debugger.
+The frame sequences are screenshoots from the [GDB](https://www.gnu.org/software/gdb/) debugger.
 
 ### The complete C source
 
