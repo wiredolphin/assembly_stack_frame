@@ -6,7 +6,7 @@ The frame sequences are screnshoots from the [GDB](https://www.gnu.org/software/
 
 ### The complete C source
 
-```c
+```C
 #include <stdio.h>
 
 int add(int a, int b) {
